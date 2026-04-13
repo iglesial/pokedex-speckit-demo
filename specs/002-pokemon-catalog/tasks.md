@@ -149,14 +149,14 @@
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-- [ ] T065 [P] Run quickstart.md acceptance-scenario walkthrough in-browser; record any gaps as issues
-- [ ] T066 [P] Run automated a11y audit (e.g., `@axe-core/react` in dev) on `/` with filters and search active; fix any critical violations (SC-007)
-- [ ] T067 [P] Keyboard-only walkthrough: reach every Pokémon's detail page via Tab + Arrow + Enter only (SC-006)
-- [ ] T068 [P] Verify motion budget — all transitions ≤ 250ms; `prefers-reduced-motion` zeroes animations (constitution VI)
-- [ ] T069 [P] Performance: confirm first page ≤ 2s on cold cache (SC-001); filter + page change ≤ 250ms on warm cache (SC-004/SC-005a) via DevTools Performance tab
-- [ ] T070 Review bundle size and lazy-load the `/preview` route so it does not ship in production bundle
-- [ ] T071 Update [CLAUDE.md](CLAUDE.md) / agent context with any new patterns discovered during implementation
-- [ ] T072 Verify `/preview` renders every variant listed in quickstart.md §"Visual review on /preview"
+- [X] T065 [P] Run quickstart.md acceptance-scenario walkthrough in-browser; record any gaps as issues
+- [X] T066 [P] Run automated a11y audit (e.g., `@axe-core/react` in dev) on `/` with filters and search active; fix any critical violations (SC-007)
+- [X] T067 [P] Keyboard-only walkthrough: reach every Pokémon's detail page via Tab + Arrow + Enter only (SC-006)
+- [X] T068 [P] Verify motion budget — all transitions ≤ 250ms; `prefers-reduced-motion` zeroes animations (constitution VI)
+- [X] T069 [P] Performance: confirm first page ≤ 2s on cold cache (SC-001); filter + page change ≤ 250ms on warm cache (SC-004/SC-005a) via DevTools Performance tab
+- [X] T070 Review bundle size and lazy-load the `/preview` route so it does not ship in production bundle
+- [X] T071 Update [CLAUDE.md](CLAUDE.md) / agent context with any new patterns discovered during implementation
+- [X] T072 Verify `/preview` renders every variant listed in quickstart.md §"Visual review on /preview"
 
 ---
 
