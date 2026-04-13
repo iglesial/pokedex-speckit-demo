@@ -101,20 +101,20 @@
 
 ### Tests
 
-- [ ] T043 [P] [US2] Failing test [src/components/core/SearchInput/SearchInput.test.tsx](src/components/core/SearchInput/SearchInput.test.tsx) — renders labeled input, fires `onChange`, clear (×) button appears when non-empty and fires `onChange("")`, `onArrowDown` fires on ArrowDown keydown
-- [ ] T044 [P] [US2] Failing test [src/components/core/EmptyState/EmptyState.test.tsx](src/components/core/EmptyState/EmptyState.test.tsx) — renders title/description/action; invokes `onAction`
-- [ ] T045 [US2] Extend [src/hooks/useCatalogQuery.test.ts](src/hooks/useCatalogQuery.test.ts) — parse `?q=CHAR` → lowercase; whitespace-only query → empty; serialize `q=""` omits key; updating `q` resets `page` to 1
-- [ ] T046 [US2] Extend [src/hooks/useFilteredCatalog.test.ts](src/hooks/useFilteredCatalog.test.ts) — `q="char"` → 3 results; `q="025"` → Pikachu alone; `q="zzz"` → `isEmpty: true`; all scenarios paginate correctly (3 results fit on 1 page)
-- [ ] T047 [US2] Extend [src/pages/HomePage/HomePage.test.tsx](src/pages/HomePage/HomePage.test.tsx) — typing "char" updates URL to `?q=char` after 150ms debounce; grid shows 3 cards; clearing restores full grid; zero-match shows `EmptyState` with "Clear search" CTA; ArrowDown from search moves focus to first card
+- [X] T043 [P] [US2] Failing test [src/components/core/SearchInput/SearchInput.test.tsx](src/components/core/SearchInput/SearchInput.test.tsx) — renders labeled input, fires `onChange`, clear (×) button appears when non-empty and fires `onChange("")`, `onArrowDown` fires on ArrowDown keydown
+- [X] T044 [P] [US2] Failing test [src/components/core/EmptyState/EmptyState.test.tsx](src/components/core/EmptyState/EmptyState.test.tsx) — renders title/description/action; invokes `onAction`
+- [X] T045 [US2] Extend [src/hooks/useCatalogQuery.test.ts](src/hooks/useCatalogQuery.test.ts) — parse `?q=CHAR` → lowercase; whitespace-only query → empty; serialize `q=""` omits key; updating `q` resets `page` to 1
+- [X] T046 [US2] Extend [src/hooks/useFilteredCatalog.test.ts](src/hooks/useFilteredCatalog.test.ts) — `q="char"` → 3 results; `q="025"` → Pikachu alone; `q="zzz"` → `isEmpty: true`; all scenarios paginate correctly (3 results fit on 1 page)
+- [X] T047 [US2] Extend [src/pages/HomePage/HomePage.test.tsx](src/pages/HomePage/HomePage.test.tsx) — typing "char" updates URL to `?q=char` after 150ms debounce; grid shows 3 cards; clearing restores full grid; zero-match shows `EmptyState` with "Clear search" CTA; ArrowDown from search moves focus to first card
 
 ### Implementation
 
-- [ ] T048 [P] [US2] Implement [src/components/core/SearchInput/](src/components/core/SearchInput/) + barrel export
-- [ ] T049 [P] [US2] Implement [src/components/core/EmptyState/](src/components/core/EmptyState/) + barrel export
-- [ ] T050 [US2] Extend `useCatalogQuery` to handle `q` parse/serialize with trim + page-reset invariant (I3)
-- [ ] T051 [US2] Extend `useFilteredCatalog` to apply `matchesQuery` (uses `matchPokemon` utility from T014)
-- [ ] T052 [US2] Wire `SearchInput` into `HomePage`: local state → `useDebouncedValue(150)` → `useCatalogQuery` updater with `replace: true`; render `EmptyState` with "Clear search" CTA when `isEmpty && q !== ""` and no filters; ArrowDown → focus first `Card`
-- [ ] T053 [US2] Add `SearchInput` + `EmptyState` (search-only variant) entries to `/preview`
+- [X] T048 [P] [US2] Implement [src/components/core/SearchInput/](src/components/core/SearchInput/) + barrel export
+- [X] T049 [P] [US2] Implement [src/components/core/EmptyState/](src/components/core/EmptyState/) + barrel export
+- [X] T050 [US2] Extend `useCatalogQuery` to handle `q` parse/serialize with trim + page-reset invariant (I3)
+- [X] T051 [US2] Extend `useFilteredCatalog` to apply `matchesQuery` (uses `matchPokemon` utility from T014)
+- [X] T052 [US2] Wire `SearchInput` into `HomePage`: local state → `useDebouncedValue(150)` → `useCatalogQuery` updater with `replace: true`; render `EmptyState` with "Clear search" CTA when `isEmpty && q !== ""` and no filters; ArrowDown → focus first `Card`
+- [X] T053 [US2] Add `SearchInput` + `EmptyState` (search-only variant) entries to `/preview`
 
 **Checkpoint**: US1 + US2 both independently functional. Integration test green. Manual: "char" → 3 cards; "zzz" → empty state with CTA; ↓ from input → focus first card.
 

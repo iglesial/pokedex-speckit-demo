@@ -15,3 +15,9 @@ export type { PaginationProps } from './core/Pagination/Pagination';
 
 export { ErrorState } from './core/ErrorState/ErrorState';
 export type { ErrorStateProps } from './core/ErrorState/ErrorState';
+
+export { SearchInput } from './core/SearchInput/SearchInput';
+export type { SearchInputProps } from './core/SearchInput/SearchInput';
+
+export { EmptyState } from './core/EmptyState/EmptyState';
+export type { EmptyStateProps } from './core/EmptyState/EmptyState';

@@ -27,3 +27,9 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+.home__toolbar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-6);
+}
