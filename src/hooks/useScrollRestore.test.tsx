@@ -47,4 +47,17 @@ describe('useScrollRestore', () => {
     renderHook(() => useScrollRestore(), { wrapper: wrapper('/?page=5') });
     expect(window.scrollTo).not.toHaveBeenCalled();
   });
+
+  it('does not re-restore after in-page URL changes (only once per mount)', () => {
+    sessionStorage.setItem(
+      'pokedex.scrollAnchors',
+      JSON.stringify({ '/': { scrollY: 500, focusCardId: 25 } }),
+    );
+    const { rerender } = renderHook(() => useScrollRestore(), {
+      wrapper: wrapper('/'),
+    });
+    expect(window.scrollTo).toHaveBeenCalledTimes(1);
+    rerender();
+    expect(window.scrollTo).toHaveBeenCalledTimes(1);
+  });
 });
