@@ -21,13 +21,10 @@ function renderHome(initialPath = '/') {
 describe('<HomePage>', () => {
   it('renders skeletons then page 1 cards', async () => {
     renderHome();
-    // skeletons visible first
     expect(screen.getAllByTestId('skeleton-card').length).toBeGreaterThan(0);
-    // then cards appear
     await waitFor(() => {
       expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
     }, { timeout: 5000 });
-    // ID formatting
     expect(screen.getByText('#001')).toBeInTheDocument();
   });
 
@@ -46,7 +43,7 @@ describe('<HomePage>', () => {
     const user = userEvent.setup();
     await user.click(screen.getByLabelText('Next page'));
     await waitFor(() => {
-      expect(screen.getByText('Pikachu')).toBeInTheDocument(); // id 25 → page 2
+      expect(screen.getByText('Pikachu')).toBeInTheDocument();
     });
   });
 
@@ -57,7 +54,70 @@ describe('<HomePage>', () => {
     }, { timeout: 5000 });
     expect(screen.getByLabelText('Next page')).toBeDisabled();
     expect(screen.getByLabelText('Previous page')).not.toBeDisabled();
-    // last Pokémon present
-    expect(screen.getByText('Mew')).toBeInTheDocument(); // id 151
+    expect(screen.getByText('Mew')).toBeInTheDocument();
+  });
+
+  it('typing "char" filters the grid to matching Pokémon', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    const input = screen.getByLabelText('Search Pokémon');
+    await user.type(input, 'char');
+    await waitFor(() => {
+      expect(screen.queryByText('Bulbasaur')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('Charmander')).toBeInTheDocument();
+    expect(screen.getByText('Charmeleon')).toBeInTheDocument();
+    expect(screen.getByText('Charizard')).toBeInTheDocument();
+    expect(screen.queryByText('Pikachu')).not.toBeInTheDocument();
+  });
+
+  it('searching by numeric ID finds that Pokémon', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    await user.type(screen.getByLabelText('Search Pokémon'), '150');
+    await waitFor(() => {
+      expect(screen.getByText('Mewtwo')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Bulbasaur')).not.toBeInTheDocument();
+  });
+
+  it('zero-match search shows empty state with Clear search CTA', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    await user.type(screen.getByLabelText('Search Pokémon'), 'zzzzzz');
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toHaveTextContent(/No Pokémon match/);
+    });
+    const clearBtn = screen.getByRole('button', { name: 'Clear search' });
+    await user.click(clearBtn);
+    await waitFor(() => {
+      expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
+    }, { timeout: 5000 });
+  });
+
+  it('clicking clear button on search input restores the full grid', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    await user.type(screen.getByLabelText('Search Pokémon'), 'char');
+    await waitFor(() => {
+      expect(screen.queryByText('Bulbasaur')).not.toBeInTheDocument();
+    });
+    await user.click(screen.getByLabelText('Clear input'));
+    await waitFor(() => {
+      expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
+      expect(screen.getAllByRole('link').length).toBe(24);
+    });
   });
 });
