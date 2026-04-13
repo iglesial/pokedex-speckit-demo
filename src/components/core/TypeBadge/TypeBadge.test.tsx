@@ -8,10 +8,10 @@ describe('<TypeBadge>', () => {
     expect(screen.getByText('Fire')).toBeInTheDocument();
   });
 
-  it('applies the tokenized color', () => {
+  it('applies data-type so CSS can color per type', () => {
     render(<TypeBadge type="water" />);
     const el = screen.getByText('Water');
-    expect(el.getAttribute('style')).toContain('var(--type-water)');
     expect(el.getAttribute('data-type')).toBe('water');
+    expect(el).toHaveClass('type-badge');
   });
 });
