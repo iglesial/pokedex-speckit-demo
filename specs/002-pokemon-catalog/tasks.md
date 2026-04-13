@@ -128,20 +128,20 @@
 
 ### Tests
 
-- [ ] T054 [P] [US3] Failing test [src/components/core/TypeFilterChip/TypeFilterChip.test.tsx](src/components/core/TypeFilterChip/TypeFilterChip.test.tsx) — renders as `<button aria-pressed={active}>`; click fires `onToggle(type)`; disabled state prevents toggle
-- [ ] T055 [P] [US3] Failing test [src/components/core/TypeFilterBar/TypeFilterBar.test.tsx](src/components/core/TypeFilterBar/TypeFilterBar.test.tsx) — renders 18 chips; reset button hidden when `active.size === 0`; reset click fires `onChange(new Set())`; chip click adds/removes from set
-- [ ] T056 [US3] Extend [src/hooks/useCatalogQuery.test.ts](src/hooks/useCatalogQuery.test.ts) — parse `?types=FIRE,FLYING` → lowercase set; unknown values dropped; empty `types` omitted on serialize; updating `types` resets `page` to 1
-- [ ] T057 [US3] Extend [src/hooks/useFilteredCatalog.test.ts](src/hooks/useFilteredCatalog.test.ts) — `types={fire}` → 12 Gen 1 Fire; `types={fire,flying}` → only Charizard; `types={}` → all; combined with `q` applies intersection
-- [ ] T058 [US3] Extend [src/pages/HomePage/HomePage.test.tsx](src/pages/HomePage/HomePage.test.tsx) — clicking "Fire" chip updates URL to `?types=fire` and grid to 12 cards; adding "Flying" → 1 card (Charizard); reset button clears URL types param; search + filter empty → combined empty state with "Reset all" CTA
+- [X] T054 [P] [US3] Failing test [src/components/core/TypeFilterChip/TypeFilterChip.test.tsx](src/components/core/TypeFilterChip/TypeFilterChip.test.tsx) — renders as `<button aria-pressed={active}>`; click fires `onToggle(type)`; disabled state prevents toggle
+- [X] T055 [P] [US3] Failing test [src/components/core/TypeFilterBar/TypeFilterBar.test.tsx](src/components/core/TypeFilterBar/TypeFilterBar.test.tsx) — renders 18 chips; reset button hidden when `active.size === 0`; reset click fires `onChange(new Set())`; chip click adds/removes from set
+- [X] T056 [US3] Extend [src/hooks/useCatalogQuery.test.ts](src/hooks/useCatalogQuery.test.ts) — parse `?types=FIRE,FLYING` → lowercase set; unknown values dropped; empty `types` omitted on serialize; updating `types` resets `page` to 1
+- [X] T057 [US3] Extend [src/hooks/useFilteredCatalog.test.ts](src/hooks/useFilteredCatalog.test.ts) — `types={fire}` → 12 Gen 1 Fire; `types={fire,flying}` → only Charizard; `types={}` → all; combined with `q` applies intersection
+- [X] T058 [US3] Extend [src/pages/HomePage/HomePage.test.tsx](src/pages/HomePage/HomePage.test.tsx) — clicking "Fire" chip updates URL to `?types=fire` and grid to 12 cards; adding "Flying" → 1 card (Charizard); reset button clears URL types param; search + filter empty → combined empty state with "Reset all" CTA
 
 ### Implementation
 
-- [ ] T059 [P] [US3] Implement [src/components/core/TypeFilterChip/](src/components/core/TypeFilterChip/) using `TypeBadge` internally + barrel export
-- [ ] T060 [US3] Implement [src/components/core/TypeFilterBar/](src/components/core/TypeFilterBar/) composing 18 chips + reset control (depends on T059)
-- [ ] T061 [US3] Extend `useCatalogQuery` to handle `types` parse/serialize (csv ↔ `Set<PokemonType>`, unknown filter, page-reset invariant)
-- [ ] T062 [US3] Extend `useFilteredCatalog` to apply `matchesTypes` in composition with `matchesQuery`
-- [ ] T063 [US3] Wire `TypeFilterBar` into `HomePage` above `CatalogGrid`; compute empty-state variant based on `(q !== "", types.size > 0)` combinations → render correct copy + CTA per research.md §11
-- [ ] T064 [US3] Add `TypeFilterChip`, `TypeFilterBar`, `EmptyState` (filter-only and combined variants) entries to `/preview`
+- [X] T059 [P] [US3] Implement [src/components/core/TypeFilterChip/](src/components/core/TypeFilterChip/) using `TypeBadge` internally + barrel export
+- [X] T060 [US3] Implement [src/components/core/TypeFilterBar/](src/components/core/TypeFilterBar/) composing 18 chips + reset control (depends on T059)
+- [X] T061 [US3] Extend `useCatalogQuery` to handle `types` parse/serialize (csv ↔ `Set<PokemonType>`, unknown filter, page-reset invariant)
+- [X] T062 [US3] Extend `useFilteredCatalog` to apply `matchesTypes` in composition with `matchesQuery`
+- [X] T063 [US3] Wire `TypeFilterBar` into `HomePage` above `CatalogGrid`; compute empty-state variant based on `(q !== "", types.size > 0)` combinations → render correct copy + CTA per research.md §11
+- [X] T064 [US3] Add `TypeFilterChip`, `TypeFilterBar`, `EmptyState` (filter-only and combined variants) entries to `/preview`
 
 **Checkpoint**: All three user stories independently functional. Quickstart walkthrough passes end-to-end.
 

@@ -104,6 +104,71 @@ describe('<HomePage>', () => {
     }, { timeout: 5000 });
   });
 
+  it('clicking the Fire type chip filters to Fire-type Pokémon', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'Fire' }));
+    await waitFor(() => {
+      expect(screen.queryByText('Bulbasaur')).not.toBeInTheDocument();
+    });
+    expect(screen.getByText('Charmander')).toBeInTheDocument();
+    expect(screen.getByText('Charizard')).toBeInTheDocument();
+  });
+
+  it('adding Flying to Fire narrows to dual-typed (Charizard only)', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'Fire' }));
+    await user.click(screen.getByRole('button', { name: 'Flying' }));
+    await waitFor(() => {
+      expect(screen.getByText('Charizard')).toBeInTheDocument();
+    });
+    expect(screen.queryByText('Charmander')).not.toBeInTheDocument();
+  });
+
+  it('Reset filters button restores the full grid', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'Fire' }));
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'Reset filters' })).toBeInTheDocument(),
+    );
+    await user.click(screen.getByRole('button', { name: 'Reset filters' }));
+    await waitFor(() => {
+      expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
+      expect(screen.getAllByRole('link').length).toBe(24);
+    }, { timeout: 5000 });
+  });
+
+  it('combined empty state (search + filter both zero) shows Reset all CTA', async () => {
+    renderHome();
+    await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {
+      timeout: 5000,
+    });
+    const user = userEvent.setup();
+    await user.click(screen.getByRole('button', { name: 'Fire' }));
+    await user.type(screen.getByLabelText('Search Pokémon'), 'zzzzzz');
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toHaveTextContent(
+        /No Pokémon match your search and filters/,
+      );
+    });
+    const resetAll = screen.getByRole('button', { name: 'Reset all' });
+    await user.click(resetAll);
+    await waitFor(() => {
+      expect(screen.getByText('Bulbasaur')).toBeInTheDocument();
+    }, { timeout: 5000 });
+  });
+
   it('clicking clear button on search input restores the full grid', async () => {
     renderHome();
     await waitFor(() => expect(screen.getByText('Bulbasaur')).toBeInTheDocument(), {

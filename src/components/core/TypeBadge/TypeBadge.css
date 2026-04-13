@@ -10,4 +10,24 @@
   color: var(--fg-inverse);
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   box-shadow: var(--shadow-sm);
+  background: var(--type-normal);
 }
+
+.type-badge[data-type='normal']   { background: var(--type-normal); }
+.type-badge[data-type='fire']     { background: var(--type-fire); }
+.type-badge[data-type='water']    { background: var(--type-water); }
+.type-badge[data-type='electric'] { background: var(--type-electric); color: var(--fg-primary); text-shadow: none; }
+.type-badge[data-type='grass']    { background: var(--type-grass); }
+.type-badge[data-type='ice']      { background: var(--type-ice); color: var(--fg-primary); text-shadow: none; }
+.type-badge[data-type='fighting'] { background: var(--type-fighting); }
+.type-badge[data-type='poison']   { background: var(--type-poison); }
+.type-badge[data-type='ground']   { background: var(--type-ground); color: var(--fg-primary); text-shadow: none; }
+.type-badge[data-type='flying']   { background: var(--type-flying); }
+.type-badge[data-type='psychic']  { background: var(--type-psychic); }
+.type-badge[data-type='bug']      { background: var(--type-bug); }
+.type-badge[data-type='rock']     { background: var(--type-rock); }
+.type-badge[data-type='ghost']    { background: var(--type-ghost); }
+.type-badge[data-type='dragon']   { background: var(--type-dragon); }
+.type-badge[data-type='dark']     { background: var(--type-dark); }
+.type-badge[data-type='steel']    { background: var(--type-steel); color: var(--fg-primary); text-shadow: none; }
+.type-badge[data-type='fairy']    { background: var(--type-fairy); }
