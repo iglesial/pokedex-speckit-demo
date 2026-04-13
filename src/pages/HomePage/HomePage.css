@@ -1,0 +1,29 @@
+.home {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-6) var(--space-5);
+}
+
+.home__header {
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.home__title {
+  margin: 0;
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #f08030 0%, #f85888 50%, #6890f0 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.home__subtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--fg-muted);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
