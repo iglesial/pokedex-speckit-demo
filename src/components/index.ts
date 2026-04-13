@@ -21,3 +21,9 @@ export type { SearchInputProps } from './core/SearchInput/SearchInput';
 
 export { EmptyState } from './core/EmptyState/EmptyState';
 export type { EmptyStateProps } from './core/EmptyState/EmptyState';
+
+export { TypeFilterChip } from './core/TypeFilterChip/TypeFilterChip';
+export type { TypeFilterChipProps } from './core/TypeFilterChip/TypeFilterChip';
+
+export { TypeFilterBar } from './core/TypeFilterBar/TypeFilterBar';
+export type { TypeFilterBarProps } from './core/TypeFilterBar/TypeFilterBar';

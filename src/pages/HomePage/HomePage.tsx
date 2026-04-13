@@ -8,12 +8,41 @@ import { Pagination } from '../../components/core/Pagination/Pagination';
 import { ErrorState } from '../../components/core/ErrorState/ErrorState';
 import { SearchInput } from '../../components/core/SearchInput/SearchInput';
 import { EmptyState } from '../../components/core/EmptyState/EmptyState';
+import { TypeFilterBar } from '../../components/core/TypeFilterBar/TypeFilterBar';
 import { useCatalogQuery } from '../../hooks/useCatalogQuery';
 import { useFilteredCatalog } from '../../hooks/useFilteredCatalog';
 import { useScrollRestore } from '../../hooks/useScrollRestore';
 import { useDebouncedValue } from '../../hooks/useDebouncedValue';
 import { PAGE_SIZE } from '../../config/catalog';
+import type { PokemonType } from '../../types/pokemon';
 import './HomePage.css';
+
+interface EmptyCopy {
+  title: string;
+  description?: string;
+  actionLabel: string;
+}
+
+function emptyCopyFor(hasSearch: boolean, hasFilters: boolean, q: string): EmptyCopy {
+  if (hasSearch && hasFilters) {
+    return {
+      title: 'No Pokémon match your search and filters.',
+      description: 'Try clearing one to see more results.',
+      actionLabel: 'Reset all',
+    };
+  }
+  if (hasFilters) {
+    return {
+      title: 'No Gen 1 Pokémon combine those types.',
+      actionLabel: 'Clear filters',
+    };
+  }
+  return {
+    title: `No Pokémon match "${q}".`,
+    description: 'Try a different name or National Dex ID.',
+    actionLabel: 'Clear search',
+  };
+}
 
 export function HomePage() {
   const { data, isPending, isError, refetch } = useQuery({
@@ -29,8 +58,7 @@ export function HomePage() {
 
   // Commit debounced search into URL, resetting page to 1.
   // Only commit when the debounce has caught up to the live input — otherwise
-  // a stale debounced value can overwrite an intentional external clear
-  // (e.g., "Clear search" CTA firing during the 150ms debounce window).
+  // a stale debounced value can overwrite an intentional external clear.
   useEffect(() => {
     if (debouncedQuery !== rawQuery) return;
     if (debouncedQuery.trim() !== query.q) {
@@ -52,7 +80,24 @@ export function HomePage() {
     firstLink?.focus();
   };
 
-  const isSearchActive = query.q !== '';
+  const onTypesChange = (next: Set<PokemonType>) => {
+    update({ types: next }, { replace: true, resetPage: true });
+  };
+
+  const hasSearch = query.q !== '';
+  const hasFilters = query.types.size > 0;
+
+  const onResetEmpty = () => {
+    if (hasSearch && hasFilters) {
+      setRawQuery('');
+      update({ q: '', types: new Set() }, { replace: true, resetPage: true });
+    } else if (hasFilters) {
+      update({ types: new Set() }, { replace: true, resetPage: true });
+    } else {
+      setRawQuery('');
+      update({ q: '' }, { replace: true, resetPage: true });
+    }
+  };
 
   return (
     <div className="home">
@@ -67,6 +112,7 @@ export function HomePage() {
           onChange={setRawQuery}
           onArrowDown={focusFirstCard}
         />
+        <TypeFilterBar active={query.types} onChange={onTypesChange} />
       </div>
 
       {isError ? (
@@ -78,23 +124,17 @@ export function HomePage() {
               {isPending ? (
                 Array.from({ length: PAGE_SIZE }).map((_, i) => <SkeletonCard key={i} />)
               ) : filtered.isEmpty ? (
-                <EmptyState
-                  title={
-                    isSearchActive ? `No Pokémon match "${query.q}".` : 'No Pokémon match.'
-                  }
-                  description={
-                    isSearchActive ? 'Try a different name or National Dex ID.' : undefined
-                  }
-                  actionLabel={isSearchActive ? 'Clear search' : undefined}
-                  onAction={
-                    isSearchActive
-                      ? () => {
-                          setRawQuery('');
-                          update({ q: '' }, { replace: true, resetPage: true });
-                        }
-                      : undefined
-                  }
-                />
+                (() => {
+                  const copy = emptyCopyFor(hasSearch, hasFilters, query.q);
+                  return (
+                    <EmptyState
+                      title={copy.title}
+                      description={copy.description}
+                      actionLabel={copy.actionLabel}
+                      onAction={onResetEmpty}
+                    />
+                  );
+                })()
               ) : (
                 filtered.page.map((pokemon) => (
                   <Card key={pokemon.id} pokemon={pokemon} onFocusCard={rememberFocus} />
