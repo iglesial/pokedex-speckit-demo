@@ -1,4 +1,3 @@
-import { MemoryRouter } from 'react-router-dom';
 import { TypeBadge } from '../../components/core/TypeBadge/TypeBadge';
 import { SkeletonCard } from '../../components/core/SkeletonCard/SkeletonCard';
 import { Card } from '../../components/core/Card/Card';
@@ -26,8 +25,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 export function PreviewPage() {
   return (
-    <MemoryRouter>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: 32 }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: 32 }}>{/* */}
         <h1 style={{ marginBottom: 32 }}>Component Preview</h1>
 
         <Section title="TypeBadge · all 18 types">
@@ -72,6 +70,5 @@ export function PreviewPage() {
           <ErrorState onRetry={() => {}} />
         </Section>
       </div>
-    </MemoryRouter>
   );
 }
