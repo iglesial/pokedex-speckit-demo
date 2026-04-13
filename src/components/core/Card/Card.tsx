@@ -51,7 +51,7 @@ export const Card = forwardRef<HTMLAnchorElement, CardProps>(function Card(
       </div>
       <div className="card__meta">
         <span className="card__id">{formatId(pokemon.id)}</span>
-        <h3 className="card__name">{titleCase(pokemon.name)}</h3>
+        <h2 className="card__name">{titleCase(pokemon.name)}</h2>
         {pokemon.types.length > 0 && (
           <div className="card__types">
             {pokemon.types.map((t) => (

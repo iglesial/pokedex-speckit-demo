@@ -31,23 +31,29 @@ export function useScrollRestore(): { rememberFocus: (id: number) => void } {
   const key = location.pathname + location.search;
   const focusIdRef = useRef<number | null>(null);
 
-  // Restore on mount (and on location change)
+  // Restore only once per component mount. URL changes from in-page actions
+  // (typing, clearing search, toggling filters, paginating) must NOT re-run
+  // restoration — otherwise deleting a search term would hijack focus back
+  // to the last-clicked card. Real back-navigation from /pokemon/:id unmounts
+  // HomePage and remounts it, which resets this ref and re-runs restoration.
+  const restoredRef = useRef(false);
   useEffect(() => {
+    if (restoredRef.current) return;
+    restoredRef.current = true;
     const anchors = loadAnchors();
     const anchor = anchors[key];
-    if (anchor) {
-      // Next frame so DOM has rendered
-      requestAnimationFrame(() => {
-        window.scrollTo({ top: anchor.scrollY });
-        if (anchor.focusCardId != null) {
-          const el = document.querySelector<HTMLElement>(
-            `[data-card-id="${anchor.focusCardId}"]`,
-          );
-          el?.focus();
-        }
-      });
-    }
-  }, [key]);
+    if (!anchor) return;
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: anchor.scrollY });
+      if (anchor.focusCardId != null) {
+        const el = document.querySelector<HTMLElement>(
+          `[data-card-id="${anchor.focusCardId}"]`,
+        );
+        el?.focus();
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Persist on unmount / navigation
   useEffect(() => {
