@@ -27,3 +27,21 @@ export type { TypeFilterChipProps } from './core/TypeFilterChip/TypeFilterChip';
 
 export { TypeFilterBar } from './core/TypeFilterBar/TypeFilterBar';
 export type { TypeFilterBarProps } from './core/TypeFilterBar/TypeFilterBar';
+
+export { StatBar } from './core/StatBar/StatBar';
+export type { StatBarProps } from './core/StatBar/StatBar';
+
+export { AbilityList } from './core/AbilityList/AbilityList';
+export type { AbilityListProps } from './core/AbilityList/AbilityList';
+
+export { DetailHero } from './core/DetailHero/DetailHero';
+export type { DetailHeroProps } from './core/DetailHero/DetailHero';
+
+export { SkeletonDetail } from './core/SkeletonDetail/SkeletonDetail';
+export type { SkeletonDetailProps } from './core/SkeletonDetail/SkeletonDetail';
+
+export { BackButton } from './core/BackButton/BackButton';
+export type { BackButtonProps } from './core/BackButton/BackButton';
+
+export { NotFoundState } from './core/NotFoundState/NotFoundState';
+export type { NotFoundStateProps } from './core/NotFoundState/NotFoundState';

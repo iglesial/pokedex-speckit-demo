@@ -1,0 +1,107 @@
+@keyframes heroReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.detail-hero {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+@media (min-width: 720px) {
+  .detail-hero {
+    grid-template-columns: minmax(240px, 320px) 1fr;
+    align-items: center;
+  }
+}
+
+.detail-hero__art {
+  aspect-ratio: 1;
+  background: linear-gradient(180deg, #f7f8ff 0%, #eef0fb 100%);
+  border-radius: var(--radius-md);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.detail-hero__img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.18));
+  animation: heroReveal var(--motion-slow) var(--ease) both;
+}
+
+.detail-hero__art-placeholder {
+  width: 60%;
+  aspect-ratio: 1;
+  background: #e9ebf5;
+  border-radius: 50%;
+}
+
+.detail-hero__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.detail-hero__id {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--fg-muted);
+  letter-spacing: 0.08em;
+}
+
+.detail-hero__name {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.detail-hero__types {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.detail-hero__dimensions {
+  display: flex;
+  gap: var(--space-6);
+  margin: 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+
+.detail-hero__dimensions > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.detail-hero__dimensions dt {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.detail-hero__dimensions dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--fg-primary);
+}
