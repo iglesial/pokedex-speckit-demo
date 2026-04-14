@@ -1,6 +1,6 @@
 # pokedex-speckit-demo Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-04-13
+Auto-generated from all feature plans. Last updated: 2026-04-14
 
 ## Active Technologies
 
@@ -45,6 +45,13 @@ npm run build       # tsc + vite build
 
 ## Recent Changes
 
+- 007-evolution-chain: Evolution section on the detail page. Linear + branching
+  chains, trigger-labeled arrows ("Lv. 16", "Fire Stone", "Trade", "Friendship"),
+  current-stage highlighted with `aria-current="page"`, "does not evolve" copy
+  for Pokémon without evolutions, Gen 1 silent truncation (Pichu filtered from
+  Pikachu's chain). Scoped error state with Retry leaves rest of page intact.
+  Extends `getPokemonDetail` with `evolutionChainId` and adds `getEvolutionChain`
+  + `parseEvolutionChain` + `formatEvolutionTrigger`.
 - 006-pokemon-detail: Detail page at `/pokemon/:id` with hero artwork (entry
   motion), name/ID, type badges, six base-stat bars (shared max 255 with
   low/mid/high color bands), height/weight, abilities (hidden flagged),

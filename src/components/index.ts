@@ -45,3 +45,15 @@ export type { BackButtonProps } from './core/BackButton/BackButton';
 
 export { NotFoundState } from './core/NotFoundState/NotFoundState';
 export type { NotFoundStateProps } from './core/NotFoundState/NotFoundState';
+
+export { EvolutionStage } from './core/EvolutionStage/EvolutionStage';
+export type { EvolutionStageProps } from './core/EvolutionStage/EvolutionStage';
+
+export { EvolutionEdge } from './core/EvolutionEdge/EvolutionEdge';
+export type { EvolutionEdgeProps } from './core/EvolutionEdge/EvolutionEdge';
+
+export { SkeletonEvolution } from './core/SkeletonEvolution/SkeletonEvolution';
+export type { SkeletonEvolutionProps } from './core/SkeletonEvolution/SkeletonEvolution';
+
+export { EvolutionChain } from './core/EvolutionChain/EvolutionChain';
+export type { EvolutionChainProps } from './core/EvolutionChain/EvolutionChain';

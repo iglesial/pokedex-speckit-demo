@@ -15,6 +15,10 @@ import { DetailHero } from '../../components/core/DetailHero/DetailHero';
 import { SkeletonDetail } from '../../components/core/SkeletonDetail/SkeletonDetail';
 import { BackButton } from '../../components/core/BackButton/BackButton';
 import { NotFoundState } from '../../components/core/NotFoundState/NotFoundState';
+import { EvolutionStage } from '../../components/core/EvolutionStage/EvolutionStage';
+import { EvolutionEdge } from '../../components/core/EvolutionEdge/EvolutionEdge';
+import { SkeletonEvolution } from '../../components/core/SkeletonEvolution/SkeletonEvolution';
+import type { EvolutionStage as EvoStageModel } from '../../types/pokemon';
 import { TYPE_LIST } from '../../config/catalog';
 import type { PokemonSummary, PokemonType, PokemonDetail } from '../../types/pokemon';
 
@@ -35,6 +39,7 @@ const charizardDetail: PokemonDetail = {
     { name: 'solar-power', isHidden: true },
   ],
   flavorText: 'Spits fire that is hot enough to melt boulders.',
+  evolutionChainId: 2,
 };
 const bulbasaurDetail: PokemonDetail = {
   id: 1, name: 'bulbasaur', types: ['grass'],
@@ -43,6 +48,7 @@ const bulbasaurDetail: PokemonDetail = {
   heightDecimetres: 7, weightHectograms: 69,
   abilities: [{ name: 'overgrow', isHidden: false }],
   flavorText: null,
+  evolutionChainId: 1,
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -190,6 +196,32 @@ export function PreviewPage() {
           <NotFoundState />
           <NotFoundState id="999" />
         </div>
+      </Section>
+
+      <Section title="EvolutionStage · default / current / null-sprite">
+        <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap' }}>
+          {([
+            { pokemonId: 1, name: 'bulbasaur', spriteUrl: 'https://img.pokemondb.net/artwork/bulbasaur.jpg', isCurrent: false },
+            { pokemonId: 2, name: 'ivysaur', spriteUrl: 'https://img.pokemondb.net/artwork/ivysaur.jpg', isCurrent: true },
+            { pokemonId: 3, name: 'venusaur', spriteUrl: null, isCurrent: false },
+          ] as EvoStageModel[]).map((s, i) => (
+            <EvolutionStage key={s.pokemonId} stage={s} index={i} />
+          ))}
+        </div>
+      </Section>
+
+      <Section title="EvolutionEdge · labeled / unlabeled / horizontal / vertical">
+        <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'center' }}>
+          <EvolutionEdge triggerLabel="Lv. 16" accessibleLabel="evolves at level 16" orientation="horizontal" />
+          <EvolutionEdge triggerLabel="Fire Stone" accessibleLabel="evolves when given Fire Stone" orientation="horizontal" />
+          <EvolutionEdge triggerLabel="Friendship" accessibleLabel="evolves with high friendship" orientation="horizontal" />
+          <EvolutionEdge triggerLabel={null} accessibleLabel={null} orientation="horizontal" />
+          <EvolutionEdge triggerLabel="Lv. 25" accessibleLabel="evolves at level 25" orientation="vertical" />
+        </div>
+      </Section>
+
+      <Section title="SkeletonEvolution">
+        <SkeletonEvolution />
       </Section>
     </div>
   );
