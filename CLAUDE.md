@@ -45,6 +45,12 @@ npm run build       # tsc + vite build
 
 ## Recent Changes
 
+- 006-pokemon-detail: Detail page at `/pokemon/:id` with hero artwork (entry
+  motion), name/ID, type badges, six base-stat bars (shared max 255 with
+  low/mid/high color bands), height/weight, abilities (hidden flagged),
+  normalized English flavor text. Discriminated-union state machine covers
+  loading/loaded/error/not-found. History-aware `BackButton` restores catalog
+  state. Extends PokeAPI client with `getPokemonDetail()` + `PokemonNotFoundError`.
 - 002-pokemon-catalog (Phase 6 Polish): `/preview` route code-split via
   React.lazy so it never ships to production; automated a11y audit via
   jest-axe on HomePage (heading-order fix: Card now uses `<h2>`).
