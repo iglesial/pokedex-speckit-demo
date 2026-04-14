@@ -1,0 +1,41 @@
+@keyframes skeleton-evo-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+.skeleton-evolution {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  animation: skeleton-evo-pulse var(--motion-slow) ease-in-out infinite;
+  min-height: 140px;
+}
+
+.skeleton-evolution__sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0,0,0,0);
+  white-space: nowrap; border: 0;
+}
+
+.skeleton-evolution__card {
+  width: 120px;
+  height: 140px;
+  background: #e9ebf5;
+  border-radius: var(--radius-md);
+}
+
+.skeleton-evolution__arrow {
+  width: 32px;
+  height: 12px;
+  background: #e9ebf5;
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 719px) {
+  .skeleton-evolution { flex-direction: column; }
+  .skeleton-evolution__arrow { width: 12px; height: 32px; }
+}

@@ -48,4 +48,33 @@ export interface PokemonDetail {
   weightHectograms: number;
   abilities: PokemonAbility[];
   flavorText: string | null;
+  evolutionChainId: number;
 }
+
+export interface EvolutionStage {
+  pokemonId: number;
+  name: string;
+  spriteUrl: string | null;
+  isCurrent: boolean;
+}
+
+export interface EvolutionEdge {
+  fromPokemonId: number;
+  toPokemonId: number;
+  triggerLabel: string | null;
+  accessibleLabel: string | null;
+}
+
+export interface EvolutionChain {
+  chainId: number;
+  stages: EvolutionStage[];
+  edges: EvolutionEdge[];
+  hasNoEvolutions: boolean;
+  isBranching: boolean;
+}
+
+export type EvolutionSectionState =
+  | { tag: 'loading' }
+  | { tag: 'loaded'; chain: EvolutionChain }
+  | { tag: 'no-evolutions' }
+  | { tag: 'error'; onRetry: () => void };

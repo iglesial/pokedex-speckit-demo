@@ -6,6 +6,7 @@ import {
   listGen1Summaries,
   listTypes,
   getPokemonDetail,
+  getEvolutionChain,
   PokeApiError,
   PokemonNotFoundError,
 } from './pokeapi';
@@ -116,5 +117,60 @@ describe('getPokemonDetail', () => {
       ),
     );
     await expect(getPokemonDetail(25)).rejects.toBeInstanceOf(PokeApiError);
+  });
+
+  it('includes evolutionChainId derived from species.evolution_chain.url', async () => {
+    const bulba = await getPokemonDetail(1);
+    expect(bulba.evolutionChainId).toBe(1);
+    const charizard = await getPokemonDetail(6);
+    expect(charizard.evolutionChainId).toBe(2);
+  });
+});
+
+describe('getEvolutionChain', () => {
+  it('returns a fully-hydrated linear chain for Bulbasaur (chain 1)', async () => {
+    const chain = await getEvolutionChain(1, 1);
+    expect(chain.chainId).toBe(1);
+    expect(chain.stages.map((s) => s.pokemonId)).toEqual([1, 2, 3]);
+    expect(chain.edges).toHaveLength(2);
+    expect(chain.isBranching).toBe(false);
+    expect(chain.hasNoEvolutions).toBe(false);
+    // Sprites hydrated
+    expect(chain.stages.every((s) => s.spriteUrl !== null)).toBe(true);
+    expect(chain.stages[0].spriteUrl).toBe('https://artwork/1.png');
+  });
+
+  it('returns a branching chain for Eevee (chain 67) with current marked', async () => {
+    const chain = await getEvolutionChain(67, 134);
+    expect(chain.isBranching).toBe(true);
+    expect(chain.stages).toHaveLength(4);
+    expect(chain.stages.find((s) => s.pokemonId === 134)?.isCurrent).toBe(true);
+  });
+
+  it('silently truncates Gen 2 pre-evolutions (Pichu → Pikachu → Raichu = 2 stages)', async () => {
+    const chain = await getEvolutionChain(10, 25);
+    expect(chain.stages.map((s) => s.pokemonId)).toEqual([25, 26]);
+  });
+
+  it('throws PokeApiError on chain endpoint 500', async () => {
+    server.use(
+      http.get(`${POKEAPI_BASE}/evolution-chain/1`, () =>
+        HttpResponse.json({ error: 'boom' }, { status: 500 }),
+      ),
+    );
+    await expect(getEvolutionChain(1, 1)).rejects.toBeInstanceOf(PokeApiError);
+  });
+
+  it('degrades gracefully when a per-stage sprite fetch fails', async () => {
+    server.use(
+      http.get(`${POKEAPI_BASE}/pokemon/2`, () =>
+        HttpResponse.json({ error: 'boom' }, { status: 500 }),
+      ),
+    );
+    const chain = await getEvolutionChain(1, 1);
+    expect(chain.stages.find((s) => s.pokemonId === 2)?.spriteUrl).toBeNull();
+    // other stages still hydrated
+    expect(chain.stages.find((s) => s.pokemonId === 1)?.spriteUrl).toBe('https://artwork/1.png');
+    expect(chain.stages.find((s) => s.pokemonId === 3)?.spriteUrl).toBe('https://artwork/3.png');
   });
 });

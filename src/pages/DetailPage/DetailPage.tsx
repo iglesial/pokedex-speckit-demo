@@ -8,6 +8,7 @@ import { SkeletonDetail } from '../../components/core/SkeletonDetail/SkeletonDet
 import { ErrorState } from '../../components/core/ErrorState/ErrorState';
 import { NotFoundState } from '../../components/core/NotFoundState/NotFoundState';
 import { BackButton } from '../../components/core/BackButton/BackButton';
+import { EvolutionChain } from '../../components/core/EvolutionChain/EvolutionChain';
 import { GEN1_RANGE } from '../../config/catalog';
 import { STAT_KEYS, statLabel } from '../../utils/formatStat';
 import type { PokemonDetail } from '../../types/pokemon';
@@ -62,6 +63,8 @@ export function DetailPage() {
               ))}
             </div>
           </section>
+
+          <EvolutionChain chainId={data.evolutionChainId} currentPokemonId={data.id} />
 
           <section className="detail__section" aria-labelledby="abilities-heading">
             <h2 id="abilities-heading" className="detail__section-title">Abilities</h2>

@@ -1,12 +1,17 @@
 import { POKEAPI_BASE, GEN1_RANGE, TYPE_LIST } from '../config/catalog';
 import type {
   BaseStats,
+  EvolutionChain,
   PokemonAbility,
   PokemonDetail,
   PokemonSummary,
   PokemonType,
 } from '../types/pokemon';
 import { normalizeFlavor } from '../utils/normalizeFlavor';
+import {
+  parseEvolutionChain,
+  type PokeApiChainResponse,
+} from '../utils/parseEvolutionChain';
 
 export class PokeApiError extends Error {
   constructor(public status: number, public url: string, message?: string) {
@@ -51,6 +56,12 @@ interface SpeciesResponse {
     flavor_text: string;
     language: { name: string };
   }[];
+  evolution_chain?: { url: string };
+}
+
+function idFromUrl(url: string): number {
+  const match = url.match(/\/(\d+)\/?$/);
+  return match ? parseInt(match[1], 10) : 0;
 }
 
 function toSummary(p: PokemonResponse): PokemonSummary {
@@ -163,6 +174,8 @@ export async function getPokemonDetail(id: number): Promise<PokemonDetail> {
       .map((t) => t.type.name)
       .filter(isKnownType);
     const artwork = pokemon.sprites.other?.['official-artwork']?.front_default ?? null;
+    const chainUrl = species.evolution_chain?.url ?? '';
+    const evolutionChainId = idFromUrl(chainUrl);
     return {
       id: pokemon.id,
       name: pokemon.name,
@@ -173,6 +186,7 @@ export async function getPokemonDetail(id: number): Promise<PokemonDetail> {
       weightHectograms: pokemon.weight,
       abilities: toAbilities(pokemon.abilities),
       flavorText: pickEnglishFlavor(species.flavor_text_entries),
+      evolutionChainId,
     };
   } catch (e) {
     if (e instanceof PokeApiError && e.status === 404) {
@@ -180,4 +194,42 @@ export async function getPokemonDetail(id: number): Promise<PokemonDetail> {
     }
     throw e;
   }
+}
+
+/**
+ * Fetches /evolution-chain/{chainId}, parses to domain model, and hydrates
+ * each surviving Gen 1 stage's sprite via a batched /pokemon/{id} call.
+ * Sprite fetch failures per stage degrade gracefully to `spriteUrl: null`;
+ * they do not fail the whole chain call.
+ */
+export async function getEvolutionChain(
+  chainId: number,
+  currentPokemonId: number,
+): Promise<EvolutionChain> {
+  const raw = (await getJson(
+    `${POKEAPI_BASE}/evolution-chain/${chainId}`,
+  )) as PokeApiChainResponse;
+  const chain = parseEvolutionChain(raw, currentPokemonId);
+
+  // Hydrate sprites + names in parallel; swallow per-stage failures.
+  // The evolution-chain endpoint returns only species URLs — pick the
+  // authoritative display name from /pokemon/{id} so the chain renders
+  // consistently with the rest of the app.
+  const hydrated = await Promise.all(
+    chain.stages.map(async (stage) => {
+      try {
+        const p = (await getJson(`${POKEAPI_BASE}/pokemon/${stage.pokemonId}`)) as PokemonResponse;
+        const artwork = p.sprites.other?.['official-artwork']?.front_default ?? null;
+        return {
+          ...stage,
+          name: p.name,
+          spriteUrl: artwork ?? p.sprites.front_default ?? null,
+        };
+      } catch {
+        return stage;
+      }
+    }),
+  );
+
+  return { ...chain, stages: hydrated };
 }

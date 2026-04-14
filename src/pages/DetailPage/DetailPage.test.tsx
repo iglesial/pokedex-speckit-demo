@@ -133,3 +133,61 @@ describe('<DetailPage>', () => {
     expect(screen.getByRole('button', { name: 'Back to catalog' })).toBeInTheDocument();
   });
 });
+
+describe('<DetailPage> Evolution section', () => {
+  it('renders the Evolution section below stats on a linear chain (Bulbasaur)', async () => {
+    renderDetail('/pokemon/1');
+    await waitFor(
+      () => expect(screen.getByRole('heading', { level: 1, name: 'Bulbasaur' })).toBeInTheDocument(),
+      { timeout: 5000 },
+    );
+    // Evolution heading + chain members
+    expect(screen.getByRole('heading', { level: 2, name: 'Evolution' })).toBeInTheDocument();
+    await waitFor(
+      () => expect(screen.getByLabelText('Bulbasaur, current Pokémon')).toBeInTheDocument(),
+      { timeout: 5000 },
+    );
+    expect(screen.getByRole('link', { name: 'Ivysaur' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Venusaur' })).toBeInTheDocument();
+  });
+
+  it('renders "This Pokémon does not evolve." for Tauros', async () => {
+    renderDetail('/pokemon/128');
+    await waitFor(
+      () => expect(screen.getByText('This Pokémon does not evolve.')).toBeInTheDocument(),
+      { timeout: 5000 },
+    );
+  });
+
+  it('branching chain: Vaporeon highlighted; Eevee/Jolteon/Flareon are links', async () => {
+    renderDetail('/pokemon/134');
+    await waitFor(
+      () => expect(screen.getByLabelText('Vaporeon, current Pokémon')).toBeInTheDocument(),
+      { timeout: 5000 },
+    );
+    expect(screen.getByRole('link', { name: 'Eevee' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Jolteon' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Flareon' })).toBeInTheDocument();
+  });
+
+  it('scoped chain error: rest of page stays functional', async () => {
+    server.use(
+      http.get(`${POKEAPI_BASE}/evolution-chain/1`, () =>
+        HttpResponse.json({ error: 'boom' }, { status: 500 }),
+      ),
+    );
+    renderDetail('/pokemon/1');
+    await waitFor(
+      () => expect(screen.getByRole('heading', { level: 1, name: 'Bulbasaur' })).toBeInTheDocument(),
+      { timeout: 5000 },
+    );
+    // Hero + stats + abilities all present
+    expect(screen.getByLabelText(/HP/)).toBeInTheDocument();
+    // Scoped Evolution error
+    await waitFor(() =>
+      expect(screen.getByText("Couldn't load the evolution chain.")).toBeInTheDocument(),
+    );
+    // BackButton still clickable (SC-006)
+    expect(screen.getByRole('button', { name: 'Back to catalog' })).toBeEnabled();
+  });
+});

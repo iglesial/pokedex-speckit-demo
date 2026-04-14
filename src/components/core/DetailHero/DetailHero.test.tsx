@@ -13,6 +13,7 @@ const charizard: PokemonDetail = {
   weightHectograms: 905,
   abilities: [],
   flavorText: null,
+  evolutionChainId: 2,
 };
 
 describe('<DetailHero>', () => {

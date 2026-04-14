@@ -1,0 +1,34 @@
+.evolution-edge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--fg-muted);
+  animation: evolution-stage-in var(--motion-base) var(--ease) both;
+  animation-delay: 150ms;
+}
+
+.evolution-edge__arrow {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.evolution-edge[data-orientation='vertical'] .evolution-edge__arrow {
+  transform: rotate(90deg);
+}
+
+@media (max-width: 719px) {
+  .evolution-edge[data-orientation='auto'] .evolution-edge__arrow {
+    transform: rotate(90deg);
+  }
+}
+
+.evolution-edge__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
