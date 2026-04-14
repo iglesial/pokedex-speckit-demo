@@ -1,0 +1,39 @@
+.stat-bar {
+  display: grid;
+  grid-template-columns: 72px 48px 1fr;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.stat-bar__label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
+.stat-bar__value {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg-primary);
+  text-align: right;
+}
+
+.stat-bar__track {
+  height: 8px;
+  background: var(--stat-track);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.stat-bar__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  transition: width var(--motion-base) var(--ease);
+}
+
+.stat-bar__fill[data-band='low']  { background: var(--stat-low); }
+.stat-bar__fill[data-band='mid']  { background: var(--stat-mid); }
+.stat-bar__fill[data-band='high'] { background: var(--stat-high); }

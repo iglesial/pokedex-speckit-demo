@@ -45,6 +45,12 @@
   --radius-lg: 20px;
   --radius-pill: 999px;
 
+  /* Stat bands */
+  --stat-low: #ef6f6c;
+  --stat-mid: #f0c36c;
+  --stat-high: #7cc77a;
+  --stat-track: rgba(20, 24, 48, 0.08);
+
   /* Surface */
   --bg-page: #f3f4f9;
   --bg-card: #ffffff;

@@ -1,9 +1,22 @@
 import { POKEAPI_BASE, GEN1_RANGE, TYPE_LIST } from '../config/catalog';
-import type { PokemonSummary, PokemonType } from '../types/pokemon';
+import type {
+  BaseStats,
+  PokemonAbility,
+  PokemonDetail,
+  PokemonSummary,
+  PokemonType,
+} from '../types/pokemon';
+import { normalizeFlavor } from '../utils/normalizeFlavor';
 
 export class PokeApiError extends Error {
   constructor(public status: number, public url: string, message?: string) {
     super(message ?? `PokeAPI error ${status} at ${url}`);
+  }
+}
+
+export class PokemonNotFoundError extends Error {
+  constructor(public id: number | string) {
+    super(`Pokémon not found: ${id}`);
   }
 }
 
@@ -22,11 +35,22 @@ async function getJson(url: string): Promise<unknown> {
 interface PokemonResponse {
   id: number;
   name: string;
+  height: number;
+  weight: number;
   types: { slot: number; type: { name: string } }[];
   sprites: {
     front_default: string | null;
     other?: { 'official-artwork'?: { front_default?: string | null } };
   };
+  stats: { base_stat: number; stat: { name: string } }[];
+  abilities: { ability: { name: string }; is_hidden: boolean; slot: number }[];
+}
+
+interface SpeciesResponse {
+  flavor_text_entries: {
+    flavor_text: string;
+    language: { name: string };
+  }[];
 }
 
 function toSummary(p: PokemonResponse): PokemonSummary {
@@ -41,6 +65,42 @@ function toSummary(p: PokemonResponse): PokemonSummary {
     types,
     spriteUrl: artwork ?? p.sprites.front_default ?? null,
   };
+}
+
+const STAT_NAME_MAP: Record<string, keyof BaseStats> = {
+  hp: 'hp',
+  attack: 'attack',
+  defense: 'defense',
+  'special-attack': 'specialAttack',
+  'special-defense': 'specialDefense',
+  speed: 'speed',
+};
+
+function toBaseStats(stats: PokemonResponse['stats']): BaseStats {
+  const out: BaseStats = {
+    hp: 0, attack: 0, defense: 0,
+    specialAttack: 0, specialDefense: 0, speed: 0,
+  };
+  for (const entry of stats) {
+    const key = STAT_NAME_MAP[entry.stat.name];
+    if (key) out[key] = entry.base_stat;
+  }
+  return out;
+}
+
+function toAbilities(abilities: PokemonResponse['abilities']): PokemonAbility[] {
+  return [...abilities]
+    .sort((a, b) => a.slot - b.slot)
+    .map((a) => ({ name: a.ability.name, isHidden: a.is_hidden }));
+}
+
+function pickEnglishFlavor(entries: SpeciesResponse['flavor_text_entries']): string | null {
+  const english = entries.filter((e) => e.language.name === 'en');
+  if (english.length === 0) return null;
+  // API orders oldest→newest; take most recent
+  const most = english[english.length - 1];
+  const normalized = normalizeFlavor(most.flavor_text);
+  return normalized.length === 0 ? null : normalized;
 }
 
 /**
@@ -81,4 +141,43 @@ export async function listGen1Summaries(): Promise<PokemonSummary[]> {
 export async function listTypes(): Promise<PokemonType[]> {
   const data = (await getJson(`${POKEAPI_BASE}/type`)) as { results: { name: string }[] };
   return data.results.map((r) => r.name).filter(isKnownType);
+}
+
+/**
+ * Fetches combined /pokemon/{id} + /pokemon-species/{id} and projects to
+ * a single PokemonDetail domain object. Throws PokemonNotFoundError for
+ * out-of-range IDs (no network) and for upstream 404s.
+ * Cache key should be ['pokemon-detail', id]; caller configures 24h staleTime.
+ */
+export async function getPokemonDetail(id: number): Promise<PokemonDetail> {
+  if (!Number.isInteger(id) || id < GEN1_RANGE.min || id > GEN1_RANGE.max) {
+    throw new PokemonNotFoundError(id);
+  }
+  try {
+    const [pokemon, species] = await Promise.all([
+      getJson(`${POKEAPI_BASE}/pokemon/${id}`) as Promise<PokemonResponse>,
+      getJson(`${POKEAPI_BASE}/pokemon-species/${id}`) as Promise<SpeciesResponse>,
+    ]);
+    const types = pokemon.types
+      .sort((a, b) => a.slot - b.slot)
+      .map((t) => t.type.name)
+      .filter(isKnownType);
+    const artwork = pokemon.sprites.other?.['official-artwork']?.front_default ?? null;
+    return {
+      id: pokemon.id,
+      name: pokemon.name,
+      types,
+      artworkUrl: artwork ?? pokemon.sprites.front_default ?? null,
+      stats: toBaseStats(pokemon.stats),
+      heightDecimetres: pokemon.height,
+      weightHectograms: pokemon.weight,
+      abilities: toAbilities(pokemon.abilities),
+      flavorText: pickEnglishFlavor(species.flavor_text_entries),
+    };
+  } catch (e) {
+    if (e instanceof PokeApiError && e.status === 404) {
+      throw new PokemonNotFoundError(id);
+    }
+    throw e;
+  }
 }

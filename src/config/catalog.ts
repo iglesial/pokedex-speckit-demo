@@ -10,3 +10,10 @@ export const TYPE_LIST: PokemonType[] = [
 ];
 
 export const POKEAPI_BASE = 'https://pokeapi.co/api/v2';
+
+export const STAT_MAX = 255;
+
+export const STAT_BANDS = {
+  low: 50,
+  mid: 100,
+} as const;

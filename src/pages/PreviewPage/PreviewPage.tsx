@@ -9,14 +9,40 @@ import { SearchInput } from '../../components/core/SearchInput/SearchInput';
 import { EmptyState } from '../../components/core/EmptyState/EmptyState';
 import { TypeFilterChip } from '../../components/core/TypeFilterChip/TypeFilterChip';
 import { TypeFilterBar } from '../../components/core/TypeFilterBar/TypeFilterBar';
+import { StatBar } from '../../components/core/StatBar/StatBar';
+import { AbilityList } from '../../components/core/AbilityList/AbilityList';
+import { DetailHero } from '../../components/core/DetailHero/DetailHero';
+import { SkeletonDetail } from '../../components/core/SkeletonDetail/SkeletonDetail';
+import { BackButton } from '../../components/core/BackButton/BackButton';
+import { NotFoundState } from '../../components/core/NotFoundState/NotFoundState';
 import { TYPE_LIST } from '../../config/catalog';
-import type { PokemonSummary, PokemonType } from '../../types/pokemon';
+import type { PokemonSummary, PokemonType, PokemonDetail } from '../../types/pokemon';
 
 const pikachu: PokemonSummary = {
   id: 25, name: 'pikachu', types: ['electric'], spriteUrl: null,
 };
 const charizard: PokemonSummary = {
   id: 6, name: 'charizard', types: ['fire', 'flying'], spriteUrl: null,
+};
+
+const charizardDetail: PokemonDetail = {
+  id: 6, name: 'charizard', types: ['fire', 'flying'],
+  artworkUrl: null,
+  stats: { hp: 78, attack: 84, defense: 78, specialAttack: 109, specialDefense: 85, speed: 100 },
+  heightDecimetres: 17, weightHectograms: 905,
+  abilities: [
+    { name: 'blaze', isHidden: false },
+    { name: 'solar-power', isHidden: true },
+  ],
+  flavorText: 'Spits fire that is hot enough to melt boulders.',
+};
+const bulbasaurDetail: PokemonDetail = {
+  id: 1, name: 'bulbasaur', types: ['grass'],
+  artworkUrl: null,
+  stats: { hp: 45, attack: 49, defense: 49, specialAttack: 65, specialDefense: 65, speed: 45 },
+  heightDecimetres: 7, weightHectograms: 69,
+  abilities: [{ name: 'overgrow', isHidden: false }],
+  flavorText: null,
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -116,6 +142,54 @@ export function PreviewPage() {
 
       <Section title="ErrorState">
         <ErrorState onRetry={() => {}} />
+      </Section>
+
+      <Section title="DetailHero · 1 type / 2 types">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+          <DetailHero pokemon={bulbasaurDetail} />
+          <DetailHero pokemon={charizardDetail} />
+        </div>
+      </Section>
+
+      <Section title="StatBar · low / mid / high / clamped / zero">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, maxWidth: 420 }}>
+          <StatBar label="HP" value={0} />
+          <StatBar label="Attack" value={45} />
+          <StatBar label="Defense" value={75} />
+          <StatBar label="Sp. Atk" value={150} />
+          <StatBar label="Speed" value={300} />
+        </div>
+      </Section>
+
+      <Section title="AbilityList · regular only / regular + hidden / all hidden">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 24, maxWidth: 420 }}>
+          <AbilityList abilities={[{ name: 'overgrow', isHidden: false }]} />
+          <AbilityList abilities={[
+            { name: 'blaze', isHidden: false },
+            { name: 'solar-power', isHidden: true },
+          ]} />
+          <AbilityList abilities={[
+            { name: 'synchronize', isHidden: true },
+          ]} />
+        </div>
+      </Section>
+
+      <Section title="SkeletonDetail">
+        <SkeletonDetail />
+      </Section>
+
+      <Section title="BackButton · default / custom label">
+        <div style={{ display: 'flex', gap: 16 }}>
+          <BackButton />
+          <BackButton label="Home" />
+        </div>
+      </Section>
+
+      <Section title="NotFoundState · default / with id">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <NotFoundState />
+          <NotFoundState id="999" />
+        </div>
       </Section>
     </div>
   );
